@@ -7,7 +7,7 @@ class Scene {
         strokeWeight(2);
         //stroke()
         fill("#8e4141")
-        rect(canvWidth / 2 - 435 / 4, 0, 30, 340);
+        rect(425 / 2 - 12 , 0, 30, 340);
         rect(0, 0, 10, 340);
         rect(0, 0, 425, 10);
         rect(425, 0, 10, 340);

@@ -6,6 +6,8 @@ class Piece {
     this.x = this.section.x;
     this.y = y;
     this.diameter = 23;
+    this.stroke = 'rgba(0,0,0,0.25)';
+    this.strokeWeight = 1;
   }
 
   setColor() {
@@ -45,12 +47,91 @@ class Piece {
     this.color = color;
   }
 
-  clicked() {
-    //has bugs needs fixing
+  clicked(dice, selectState, turn) {
+    console.log(selectState)
+    let color = turn === 'white' ? '#f7f3a5' : '#8e4141'
+    if(this.color != color)
+      return
     let d = dist(mouseX, mouseY, this.x, this.y);
-    if(d < this.diameter / 2) {
-      this.color = color(255,0,200)
-    }
+      if(d < this.diameter / 2) {
+        //Pick up effect for piece
+        let lastPieceY = this.section.pieces[this.section.pieces.length - 1].y
+
+        if( lastPieceY === this.y){
+          this.diameter = 26;
+          this.stroke = 'rgba(0,0,0,0.25)';
+          this.strokeWeight = 2;
+          selectState = true;
+  
+          //check dice and highlight applicable sections
+          sections.forEach(section => {
+            if(this.color == '#f7f3a5') {
+              if(this.section.indexForWhite == section.indexForWhite - dice.first){
+                section.highlight = true;
+                //move function stuff
+
+                //if move was done
+                dice.first = 0
+              }
+              if(this.section.indexForWhite == section.indexForWhite - dice.second){
+                section.highlight = true;
+                //move function stuff
+
+                //if move was done
+                //dice.second = 0
+              }
+              if(this.section.indexForWhite == section.indexForWhite - dice.sum){
+                section.highlight = true;
+                //move function stuff
+
+                //if move was done
+                //dice = { first: 0, second: 0, sum: 0}
+              }
+            }
+  
+            if(this.color == '#8e4141') {
+              if(this.section.indexForBlack == section.indexForBlack - dice.first){
+                section.highlight = true;
+                //move function stuff
+                
+                //if move was done
+                //dice.first = 0
+              }
+              if(this.section.indexForBlack == section.indexForBlack - dice.second){
+                section.highlight = true;
+                //move function stuff
+
+                //if move was done
+                 //dice.second = 0
+              }
+              if(this.section.indexForBlack == section.indexForBlack - dice.sum){
+                section.highlight = true;
+                //move function stuff
+
+                //if move was done
+                //dice = { first: 0, second: 0, sum: 0}
+              }
+            }
+          })
+  
+        }
+
+      }
+
+    return selectState
+  }
+
+  rightClicked(selectState) {
+    selectState = false;
+    this.stroke = 'rgba(0,0,0,0.25)';
+    this.strokeWeight = 1;
+    this.diameter = 23;
+
+    sections.forEach(section => {
+      section.highlight = false;
+    })
+
+    return selectState;
   }
 
   setY() {
@@ -75,7 +156,8 @@ class Piece {
     //   this.x = mouseX;
     //   this.y = mouseY;
     // }
-    stroke(0);
+    stroke(this.stroke);
+    strokeWeight(this.strokeWeight);
     fill(this.color);
     circle(this.x, this.y, this.diameter);
   }

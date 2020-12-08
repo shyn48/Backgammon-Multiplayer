@@ -1,10 +1,17 @@
+/** //TODO:
+ * !selectState returns undefined sometimes
+ * *use move function inside the click event
+ * *make dice calculations and determine next move possiblities
+ */
+
 let sections = [];
 let pieces = [];
-let canvWidth = 620,
+let canvWidth = 700,
   canvHeight = 430;
 
 let menu = "main";
 let img;
+let selectState = false;
 
 function preload() {
   img = loadImage('/client/img/backgammon.jpg')
@@ -14,7 +21,7 @@ function setup() {
   createCanvas(canvWidth, canvHeight);
 
   for (let i = 1; i <= 6; i++) {
-    sections.push(new Section(i * 30, 10, i));
+    sections.push(new Section(i * 30, 10, i, 13 - i, 12 + i));
     if (i == 1) {
       for (let j = 0; j <= 5; j++) {
         let piece = new Piece(sections[0], (j + 1) * 15 + 10)
@@ -32,7 +39,7 @@ function setup() {
   }
 
   for (let i = 7; i <= 12; i++) {
-    sections.push(new Section(i * 30 + 40, 10, i));
+    sections.push(new Section(i * 30 + 40, 10, i, 13 - i, 12 + i));
     if (i == 7) {
       for (let j = 0; j <= 5; j++) {
         let piece = new Piece(sections[6], (j + 1) * 15 + 10)
@@ -51,7 +58,7 @@ function setup() {
   }
 
   for (let i = 1; i <= 6; i++) {
-    sections.push(new Section(i * 30, 340 - 10, i + 12));
+    sections.push(new Section(i * 30, 340 - 10, 12 +i, 12 + i, 13 - i));
 
     if (i == 1) {
       for (let j = 0; j <= 5; j++) {
@@ -71,7 +78,7 @@ function setup() {
   }
 
   for (let i = 7; i <= 12; i++) {
-    sections.push(new Section(i * 30 + 40, 340 - 10, i + 12));
+    sections.push(new Section(i * 30 + 40, 340 - 10, 12 + i ,12 + i, 13 - i));
 
     if (i == 7) {
       for (let j = 0; j <= 5; j++) {
@@ -92,6 +99,8 @@ function setup() {
 
   pieces.forEach(piece => piece.setColor())
 
+  console.log(pieces)
+
 }
 
 function draw() {
@@ -101,6 +110,11 @@ function draw() {
 
   if(menu == 'game'){
     sceneUtil.drawGameScene(menu)
+  }
+
+  if(selectState === true){
+    textSize(25)
+    text("Right Click to cancel", 440, 100)
   }
 
 }
@@ -119,9 +133,17 @@ function mouseClicked() {
     }
   }
 }
-
 function mousePressed() {
-  for (let i = 0; i < pieces.length; i++) {
-    pieces[i].clicked()
+  if(mouseButton === LEFT) {
+    if(selectState === false) {
+      for (let i = 0; i < pieces.length; i++) {
+        selectState = pieces[i].clicked({ first: 2, second: 3, sum: 5 }, selectState, 'black')
+      }
+    }
+  }
+  if(mouseButton === RIGHT) {
+    for (let i = 0; i < pieces.length; i++) {
+      selectState = pieces[i].rightClicked(6, selectState)
+    }
   }
 }
